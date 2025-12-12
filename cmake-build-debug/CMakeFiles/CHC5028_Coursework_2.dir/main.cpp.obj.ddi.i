@@ -68869,7 +68869,7 @@ class State {
 
  int harm;
 
- list<GameObject*> inventory;
+ list<GameObject*> bag;
 
  int maxWeight;
 
@@ -68881,7 +68881,7 @@ public:
     void announceLoc() const;
     Room* getCurrentRoom() const;
 
-    list<GameObject *> &getInventoryList();
+    list<GameObject *> &getBagList();
  list<GameObject*>& getEquipmentList();
 
  int getStrength() const;
@@ -68893,10 +68893,10 @@ public:
 
 
 
- GameObject* findInInventory(string thing) const;
+ GameObject* findInBag(string thing) const;
 
 
- void showInventory();
+ void showBag();
 
 
  void getThing(GameObject* &thing);
@@ -69069,7 +69069,7 @@ void saveGame() {
     file << currentState->getStrength() << " " << currentState->getHarm() << " " << currentState->getMaxWeight() << endl;
 
 
-    saveObjectList(file, currentState->getInventoryList());
+    saveObjectList(file, currentState->getBagList());
 
 
     saveObjectList(file, currentState->getEquipmentList());
@@ -69155,14 +69155,14 @@ void loadGame() {
     }
 
 
-    for(auto o : currentState->getInventoryList()) delete o;
-    currentState->getInventoryList().clear();
+    for(auto o : currentState->getBagList()) delete o;
+    currentState->getBagList();
 
     for(auto o : currentState->getEquipmentList()) delete o;
     currentState->getEquipmentList().clear();
 
 
-    loadObjectList(file, currentState->getInventoryList());
+    loadObjectList(file, currentState->getBagList());
 
 
     loadObjectList(file, currentState->getEquipmentList());
@@ -69393,11 +69393,11 @@ void gameLoop() {
      }
 
 
-        if ((commandBuffer.compare(0,endOfVerb,"inventory") == 0) || (commandBuffer.compare(0,endOfVerb,"b") == 0)) {
+        if ((commandBuffer.compare(0,endOfVerb,"bag") == 0) || (commandBuffer.compare(0,endOfVerb,"b") == 0)) {
          commandOk = true;
          while(commandOk) {
 
-          currentState->showInventory();
+          currentState->showBag();
 
           currentState->showEquipment();
 
@@ -69406,7 +69406,7 @@ void gameLoop() {
 
           inputCommand(&commandBuffer);
 
-          if (GameObject* obj = currentState->findInInventory(commandBuffer)) {
+          if (GameObject* obj = currentState->findInBag(commandBuffer)) {
 
            string msg = "You can use 'drop' to dorp the thing, or use 'equip' to equip the equipment, or "
       "'eat' some food to cure, or use 'close' to exit bag.";
@@ -69422,7 +69422,7 @@ void gameLoop() {
       currentState->equipThing(obj);
            }
 
-           else if ((commandBuffer.compare(0,endOfVerb,"eat") == 0) and (obj->getKeyword()=="v")) {
+           else if ((commandBuffer.compare(0,endOfVerb,"use") == 0) and (obj->getKeyword()=="v")) {
             currentState->eatThing(obj);
            }
 
@@ -69463,7 +69463,7 @@ void gameLoop() {
         }
 
 
-     if ((commandBuffer.compare(0, endOfVerb, "get") == 0)) {
+     if ((commandBuffer.compare(0, endOfVerb, "get") == 0) || (commandBuffer.compare(0, endOfVerb, "g") == 0)) {
       commandOk = true;
       if (!(currentState->getCurrentRoom()->getEnemies().empty())) {
        string msg = "You must defeat all the enemies in the room before you can pick up things.";
@@ -69515,7 +69515,7 @@ void gameLoop() {
      }
 
 
-     if ((commandBuffer.compare(0, endOfVerb, "fight") == 0)){
+     if ((commandBuffer.compare(0, endOfVerb, "fight") == 0) || (commandBuffer.compare(0, endOfVerb, "f") == 0)){
       commandOk = true;
       if (!(currentState->getCurrentRoom()->getEnemies().empty())){
        string msg1 = "Which enemy you want to fight?";
@@ -69539,13 +69539,6 @@ void gameLoop() {
          currentState->setStrength(playerStrength);
          int enemyStrength = enemy_object->getStrength()-currentState->getHarm();
          enemy_object->setStrength(enemyStrength);
-
-
-
-
-
-
-
         }
        }else {
         string msg3 = "This enemy don't in this room.";

@@ -35824,7 +35824,7 @@ class State {
 
  int harm;
 
- list<GameObject*> inventory;
+ list<GameObject*> bag;
 
  int maxWeight;
 
@@ -35836,7 +35836,7 @@ public:
     void announceLoc() const;
     Room* getCurrentRoom() const;
 
-    list<GameObject *> &getInventoryList();
+    list<GameObject *> &getBagList();
  list<GameObject*>& getEquipmentList();
 
  int getStrength() const;
@@ -35848,10 +35848,10 @@ public:
 
 
 
- GameObject* findInInventory(string thing) const;
+ GameObject* findInBag(string thing) const;
 
 
- void showInventory();
+ void showBag();
 
 
  void getThing(GameObject* &thing);
@@ -46551,8 +46551,8 @@ Room* State::getCurrentRoom() const {
     return this->currentRoom;
 }
 
-list<GameObject *> &State::getInventoryList() {
- return this->inventory;
+list<GameObject *> &State::getBagList() {
+ return this->bag;
 }
 
 list<GameObject*>& State::getEquipmentList() {
@@ -46560,11 +46560,11 @@ list<GameObject*>& State::getEquipmentList() {
 }
 
 
-void State::showInventory() {
- if (!inventory.empty()) {
+void State::showBag() {
+ if (!bag.empty()) {
   string objStr = "Bag: ";
-  for (auto it = inventory.begin(); it != inventory.end(); ++it) {
-   if (it != inventory.begin()) {
+  for (auto it = bag.begin(); it != bag.end(); ++it) {
+   if (it != bag.begin()) {
     objStr += ", ";
    }
    objStr += (*it)->getName();
@@ -46572,9 +46572,6 @@ void State::showInventory() {
   objStr += ".";
   wrapOut(&objStr);
   wrapEndPara();
-
-
-
  }else {
   wrapOut(&emptyBag);
   wrapEndPara();
@@ -46604,8 +46601,8 @@ void State::showEquipment() {
 }
 
 
-GameObject *State::findInInventory(string thing) const{
- for (auto obj : inventory) {
+GameObject *State::findInBag(string thing) const{
+ for (auto obj : bag) {
   if (obj->getName()==thing) {
    return obj;
   }
@@ -46627,14 +46624,14 @@ GameObject *State::findInEquipment(string thing) const {
 void State::getThing(GameObject* &thing) {
 
  int currentTotalWeight = 0;
- for (auto& obj : inventory) {
+ for (auto& obj : bag) {
   currentTotalWeight+=obj->getWeight();
  }
 
  if (currentTotalWeight + thing->getWeight() <= maxWeight){
 
 
-  inventory.push_back(thing);
+  bag.push_back(thing);
   currentRoom->getObject().remove(thing);
   string msg = "You picked up " + thing->getName() + ".";
   wrapOut(&msg);
@@ -46659,7 +46656,7 @@ void State::dropThing(GameObject* &thing) {
 
 
   currentRoom->addObject(thing);
-  inventory.remove(thing);
+  bag.remove(thing);
   string msg = "You dropped the " + thing->getName();
   wrapOut(&msg);
   wrapEndPara();
@@ -46670,7 +46667,7 @@ void State::dropThing(GameObject* &thing) {
 
 void State::equipThing(GameObject* &thing) {
  equipment.push_back(thing);
- inventory.remove(thing);
+ bag.remove(thing);
  string msg = "You equipped with " + thing->getName() + ".";
  wrapOut(&msg);
  wrapEndPara();
@@ -46683,14 +46680,14 @@ void State::takeOffThing(GameObject* &thing) {
  wrapEndPara();
 
  int currentTotalWeight = 0;
- for (auto& obj : inventory) {
+ for (auto& obj : bag) {
   currentTotalWeight+=obj->getWeight();
  }
 
  if (currentTotalWeight + thing->getWeight() <= maxWeight){
 
 
-  inventory.push_back(thing);
+  bag.push_back(thing);
   equipment.remove(thing);
   this->harm-=dynamic_cast<Weapon*>(thing)->getHarm();
  }else {
@@ -46705,7 +46702,7 @@ void State::eatThing(GameObject* &thing) {
  wrapOut(&msg);
  wrapEndPara();
  this->strength+=dynamic_cast<Food*>(thing)->getEnergy();
- inventory.remove(thing);
+ bag.remove(thing);
  delete thing;
 }
 

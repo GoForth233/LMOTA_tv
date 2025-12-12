@@ -259,8 +259,6 @@ void initRooms() {
 
 	auto * goblin = new Clowns("goblin","goblin",30,10);
 	r3->addEnemy(goblin);
-	auto * goblin1 = new Clowns("goblin","goblin",30,10);
-	r5->addEnemy(goblin1);
 	auto * dragon = new Boss("dragon","goblin",100,30);
 	r5->addEnemy(dragon);
 }
@@ -405,7 +403,7 @@ void gameLoop() {
 						currentState->equipThing(obj);
         			}
         			//使用道具(使用治疗类道具)
-        			else if ((commandBuffer.compare(0,endOfVerb,"eat") == 0) and (obj->getKeyword()=="v")) {
+        			else if ((commandBuffer.compare(0,endOfVerb,"use") == 0) and (obj->getKeyword()=="v")) {
         				currentState->eatThing(obj);
         			}
         			//TODO出售功能
