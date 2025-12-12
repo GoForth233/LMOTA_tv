@@ -1,0 +1,3 @@
+D:/Code/ClionProjects/CHC5028_Coursework_2/cmake-build-debug/CMakeFiles/CHC5028_Coursework_2.dir
+D:/Code/ClionProjects/CHC5028_Coursework_2/cmake-build-debug/CMakeFiles/edit_cache.dir
+D:/Code/ClionProjects/CHC5028_Coursework_2/cmake-build-debug/CMakeFiles/rebuild_cache.dir

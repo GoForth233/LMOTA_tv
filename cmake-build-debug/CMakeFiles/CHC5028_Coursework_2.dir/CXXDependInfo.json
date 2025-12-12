@@ -1,0 +1,18 @@
+{
+	"bmi-installation" : null,
+	"compiler-frontend-variant" : "GNU",
+	"compiler-id" : "GNU",
+	"compiler-simulate-id" : "",
+	"config" : "Debug",
+	"cxx-modules" : {},
+	"dir-cur-bld" : "D:/Code/ClionProjects/CHC5028_Coursework_2/cmake-build-debug",
+	"dir-cur-src" : "D:/Code/ClionProjects/CHC5028_Coursework_2",
+	"dir-top-bld" : "D:/Code/ClionProjects/CHC5028_Coursework_2/cmake-build-debug",
+	"dir-top-src" : "D:/Code/ClionProjects/CHC5028_Coursework_2",
+	"exports" : [],
+	"forward-modules-from-target-dirs" : [],
+	"include-dirs" : [],
+	"language" : "CXX",
+	"linked-target-dirs" : [],
+	"module-dir" : "D:/Code/ClionProjects/CHC5028_Coursework_2/cmake-build-debug/CMakeFiles/CHC5028_Coursework_2.dir"
+}

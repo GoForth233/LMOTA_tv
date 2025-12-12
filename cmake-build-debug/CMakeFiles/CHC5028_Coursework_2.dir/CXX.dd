@@ -1,0 +1,9 @@
+ninja_dyndep_version = 1.0
+build CMakeFiles/CHC5028_Coursework_2.dir/main.cpp.obj: dyndep
+
+build CMakeFiles/CHC5028_Coursework_2.dir/Room.cpp.obj: dyndep
+
+build CMakeFiles/CHC5028_Coursework_2.dir/State.cpp.obj: dyndep
+
+build CMakeFiles/CHC5028_Coursework_2.dir/wordwrap.cpp.obj: dyndep
+

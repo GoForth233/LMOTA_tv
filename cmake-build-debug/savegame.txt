@@ -1,0 +1,29 @@
+Room Blue
+100 20 20
+1
+WEAPON sword 5 e 10
+0
+6
+Room 1
+0
+0
+Room Blue
+1
+FOOD banana 3 v 50
+0
+Room 3
+0
+1
+CLOWN goblin goblin 30 10
+Room 4
+0
+0
+Room 5
+2
+WEAPON axe 7 e 20
+FOOD apple 2 v 50
+1
+BOSS dragon goblin 100 30
+White Room
+0
+0
