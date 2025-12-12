@@ -69276,6 +69276,8 @@ void initRooms() {
 
  auto * goblin = new Clowns("goblin","goblin",30,10);
  r3->addEnemy(goblin);
+ auto * goblin1 = new Clowns("goblin","goblin",30,10);
+ r5->addEnemy(goblin1);
  auto * dragon = new Boss("dragon","goblin",100,30);
  r5->addEnemy(dragon);
 }
@@ -69314,6 +69316,7 @@ void gameLoop() {
      if ((commandBuffer.compare(0,endOfVerb,"save") == 0)) {
       commandOk = true;
       saveGame();
+      currentState->getCurrentRoom()->describe();
      }
 
 
@@ -69569,7 +69572,6 @@ void gameLoop() {
         }
     }
 }
-
 
 
 

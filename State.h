@@ -10,7 +10,7 @@ class State {
 	//攻击力
 	int harm;
 	//1.创建一个背包
-	list<GameObject*> inventory;
+	list<GameObject*> bag;
 	//2. 添加一个变量控制背包容量（后期可以获得更大的背包）
 	int maxWeight;
 	//TODO装备栏（缺点可以无限装备道具,应该通过类型来限制装备数，而不是重量！以后改进），(有的装备有伤害，有的装备只增加防御或者生命值，这样就没法区分了)
@@ -22,7 +22,7 @@ public:
     void announceLoc() const;
     Room* getCurrentRoom() const;
 
-    list<GameObject *> &getInventoryList();
+    list<GameObject *> &getBagList();
 	list<GameObject*>& getEquipmentList();
 
 	int getStrength() const;
@@ -34,10 +34,10 @@ public:
 
 
 	//1、寻找道具
-	GameObject* findInInventory(string thing) const;
+	GameObject* findInBag(string thing) const;
 
 	//2、查看道具
-	void showInventory();
+	void showBag();
 
 	//3、添加道具
 	void getThing(GameObject* &thing);

@@ -59,8 +59,8 @@ Room* State::getCurrentRoom() const {
     return this->currentRoom;
 }
 
-list<GameObject *> &State::getInventoryList() {
-	return this->inventory;
+list<GameObject *> &State::getBagList() {
+	return this->bag;
 }
 
 list<GameObject*>& State::getEquipmentList() {
@@ -68,11 +68,11 @@ list<GameObject*>& State::getEquipmentList() {
 }
 
 //背包有关的东西
-void State::showInventory() {
-	if (!inventory.empty()) {
+void State::showBag() {
+	if (!bag.empty()) {
 		string objStr = "Bag: ";
-		for (auto it = inventory.begin(); it != inventory.end(); ++it) {
-			if (it != inventory.begin()) {
+		for (auto it = bag.begin(); it != bag.end(); ++it) {
+			if (it != bag.begin()) {
 				objStr += ", ";
 			}
 			objStr += (*it)->getName();
@@ -80,9 +80,6 @@ void State::showInventory() {
 		objStr += ".";
 		wrapOut(&objStr);
 		wrapEndPara();
-		/*//提示关闭背包或者操作道具
-		wrapOut(&choiceInBag);
-		wrapEndPara();*/
 	}else {
 		wrapOut(&emptyBag);
 		wrapEndPara();
@@ -112,8 +109,8 @@ void State::showEquipment() {
 }
 
 //TODO如何才能取到这个特定位置的指针(解决批量删除的问题)
-GameObject *State::findInInventory(string thing) const{
-	for (auto obj : inventory) {
+GameObject *State::findInBag(string thing) const{
+	for (auto obj : bag) {
 		if (obj->getName()==thing) {
 			return obj;
 		}
@@ -135,14 +132,14 @@ GameObject *State::findInEquipment(string thing) const {
 void State::getThing(GameObject* &thing) {
 	//计算现有背包的总重量
 	int currentTotalWeight = 0;
-	for (auto& obj : inventory) {
+	for (auto& obj : bag) {
 		currentTotalWeight+=obj->getWeight();
 	}
 	//自动拾取（不需要再次确认是否要拾取）
 	if (currentTotalWeight + thing->getWeight() <= maxWeight){
 		//将道具从房间移动到背包
 		//先添加再移除，防止内存泄漏
-		inventory.push_back(thing);
+		bag.push_back(thing);
 		currentRoom->getObject().remove(thing);
 		string msg = "You picked up " + thing->getName() + ".";
 		wrapOut(&msg);
@@ -167,7 +164,7 @@ void State::dropThing(GameObject* &thing) {
 		//将道具背包移动到房间
 		//先添加再移除，防止内存泄漏
 		currentRoom->addObject(thing);
-		inventory.remove(thing);
+		bag.remove(thing);
 		string msg = "You dropped the " + thing->getName();
 		wrapOut(&msg);
 		wrapEndPara();
@@ -178,7 +175,7 @@ void State::dropThing(GameObject* &thing) {
 //方法：使用一个粗糙的容器暂时存放使用中的装备
 void State::equipThing(GameObject* &thing) {
 	equipment.push_back(thing);
-	inventory.remove(thing);
+	bag.remove(thing);
 	string msg = "You equipped with " + thing->getName() + ".";
 	wrapOut(&msg);
 	wrapEndPara();
@@ -191,14 +188,14 @@ void State::takeOffThing(GameObject* &thing) {
 	wrapEndPara();
 
 	int currentTotalWeight = 0;
-	for (auto& obj : inventory) {
+	for (auto& obj : bag) {
 		currentTotalWeight+=obj->getWeight();
 	}
 	//检查背包现在可以装下我脱下的装备吗
 	if (currentTotalWeight + thing->getWeight() <= maxWeight){
 		//将道具从已装备移动到背包
 		//先添加再移除，防止内存泄漏
-		inventory.push_back(thing);
+		bag.push_back(thing);
 		equipment.remove(thing);
 		this->harm-=dynamic_cast<Weapon*>(thing)->getHarm();
 	}else {
@@ -213,7 +210,7 @@ void State::eatThing(GameObject* &thing) {
 	wrapOut(&msg);
 	wrapEndPara();
 	this->strength+=dynamic_cast<Food*>(thing)->getEnergy();
-	inventory.remove(thing);
+	bag.remove(thing);
 	delete thing;
 }
 

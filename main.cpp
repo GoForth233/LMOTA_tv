@@ -52,7 +52,7 @@ void saveGame() {
     file << currentState->getStrength() << " " << currentState->getHarm() << " " << currentState->getMaxWeight() << endl;
 
     // 2. 保存背包
-    saveObjectList(file, currentState->getInventoryList());
+    saveObjectList(file, currentState->getBagList());
 
     // 3. 保存装备
     saveObjectList(file, currentState->getEquipmentList()); // 需要在State.h中添加此访问器
@@ -138,14 +138,14 @@ void loadGame() {
     }
 
     // 清除玩家当前的物品和装备，防止内存泄漏或重复
-    for(auto o : currentState->getInventoryList()) delete o;
-    currentState->getInventoryList().clear();
+    for(auto o : currentState->getBagList()) delete o;
+    currentState->getBagList();
 
     for(auto o : currentState->getEquipmentList()) delete o; // 注意：如果装备在State里是单独管理的
     currentState->getEquipmentList().clear(); // 需要在State.h中确认 equipment 是 list<GameObject*>
 
     // 2. 恢复背包
-    loadObjectList(file, currentState->getInventoryList());
+    loadObjectList(file, currentState->getBagList());
 
     // 3. 恢复装备
     loadObjectList(file, currentState->getEquipmentList());
@@ -259,6 +259,8 @@ void initRooms() {
 
 	auto * goblin = new Clowns("goblin","goblin",30,10);
 	r3->addEnemy(goblin);
+	auto * goblin1 = new Clowns("goblin","goblin",30,10);
+	r5->addEnemy(goblin1);
 	auto * dragon = new Boss("dragon","goblin",100,30);
 	r5->addEnemy(dragon);
 }
@@ -297,6 +299,7 @@ void gameLoop() {
     	if ((commandBuffer.compare(0,endOfVerb,"save") == 0)) {
     		commandOk = true;
     		saveGame();
+    		currentState->getCurrentRoom()->describe();
     	}
 
     	// 读档
@@ -373,11 +376,11 @@ void gameLoop() {
     	}
 
     	//打开背包
-        if ((commandBuffer.compare(0,endOfVerb,"inventory") == 0) || (commandBuffer.compare(0,endOfVerb,"b") == 0)) {
+        if ((commandBuffer.compare(0,endOfVerb,"bag") == 0) || (commandBuffer.compare(0,endOfVerb,"b") == 0)) {
         	commandOk = true; /* Confirm command has been handled */
         	while(commandOk) {
         		//查看背包中已有道具
-        		currentState->showInventory();
+        		currentState->showBag();
         		//查看背包中已有装备
         		currentState->showEquipment();
         		//提示语句
@@ -386,7 +389,7 @@ void gameLoop() {
         		//输入想进行操作的道具
         		inputCommand(&commandBuffer);
         		//判读该道具是否在背包中
-        		if (GameObject* obj = currentState->findInInventory(commandBuffer)) {
+        		if (GameObject* obj = currentState->findInBag(commandBuffer)) {
         			//输入想进行的操作
         			string msg = "You can use 'drop' to dorp the thing, or use 'equip' to equip the equipment, or "
 						"'eat' some food to cure, or use 'close' to exit bag.";
@@ -443,7 +446,7 @@ void gameLoop() {
         }
 
     	//拾取道具
-    	if ((commandBuffer.compare(0, endOfVerb, "get") == 0)) {
+    	if ((commandBuffer.compare(0, endOfVerb, "get") == 0) || (commandBuffer.compare(0, endOfVerb, "g") == 0)) {
     		commandOk = true;
     		if (!(currentState->getCurrentRoom()->getEnemies().empty())) {
     			string msg = "You must defeat all the enemies in the room before you can pick up things.";
@@ -495,7 +498,7 @@ void gameLoop() {
     	}
 
     	//和敌人对战(TODO每个房间只有一只怪)
-    	if ((commandBuffer.compare(0, endOfVerb, "fight") == 0)){
+    	if ((commandBuffer.compare(0, endOfVerb, "fight") == 0) || (commandBuffer.compare(0, endOfVerb, "f") == 0)){
     		commandOk = true; /* Confirm command has been handled */
     		if (!(currentState->getCurrentRoom()->getEnemies().empty())){
     			string msg1 = "Which enemy you want to fight?";
@@ -519,13 +522,6 @@ void gameLoop() {
     					currentState->setStrength(playerStrength);
     					int enemyStrength = enemy_object->getStrength()-currentState->getHarm();
     					enemy_object->setStrength(enemyStrength);
-    					/*if(enemyStrength <= 0) {
-    						string msg2 = "Defeated "+enemy_object->getName();
-    						wrapOut(&msg2);
-    						wrapEndPara();
-    						currentState->getCurrentRoom()->getEnemies().remove(enemy_object);
-    						delete(enemy_object);
-    					}*/
     				}
     			}else {
     				string msg3 = "This enemy don't in this room.";
